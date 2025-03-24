@@ -3,12 +3,14 @@ package com.egallery.controller;
 
 import com.egallery.model.entity.ApplicationUser;
 import com.egallery.service.impl.ApplicationUserServiceImpl;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@SecurityRequirement(name = "bearer-jwt")
 @RestController
 @RequestMapping("/api/users")
 public class ApplicationUserController {
