@@ -35,4 +35,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
     public void delete(UUID id) {
         userRepository.deleteById(id);
     }
+    public List<Object[]> getFeaturedArtists() {
+        return userRepository.findTopFeaturedArtists();
+    }
 }

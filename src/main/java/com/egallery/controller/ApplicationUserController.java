@@ -1,10 +1,13 @@
 
 package com.egallery.controller;
 
+import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.entity.ApplicationUser;
+import com.egallery.security.SecurityUtils;
 import com.egallery.service.impl.ApplicationUserServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,4 +40,15 @@ public class ApplicationUserController {
     public void delete(@PathVariable UUID id) {
         userService.delete(id);
     }
+
+    @GetMapping("/getCurrentUser")
+    public ApplicationUserDTO getCurrentUser() {
+        return SecurityUtils.getCurrentUser().mapToDto();
+    }
+
+    @GetMapping("/featured-artists")
+    public ResponseEntity<List<Object[]>> getFeaturedArtists() {
+        return ResponseEntity.ok(userService.getFeaturedArtists());
+    }
+
 }

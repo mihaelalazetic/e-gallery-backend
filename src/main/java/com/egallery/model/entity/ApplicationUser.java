@@ -26,19 +26,23 @@ public class ApplicationUser extends BaseEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
+    private String fullName;
+    private String bio;
     private String password;
 
     private String slug;
+    private String profilePictureUrl;
 
     private Boolean isActive = true;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
@@ -66,4 +70,15 @@ public class ApplicationUser extends BaseEntity implements UserDetails {
         return isActive != null && isActive; // or just return true
     }
 
+    public ApplicationUserDTO mapToDto() {
+        return ApplicationUserDTO.builder()
+                .id(getId())
+                .username(getUsername())
+                .email(getEmail())
+                .fullName(getFullName())
+                .profilePictureUrl(getProfilePictureUrl())
+                .roles(getRoles())
+                .build();
+
+    }
 }

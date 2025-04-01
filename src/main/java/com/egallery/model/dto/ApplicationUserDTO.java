@@ -1,5 +1,6 @@
 package com.egallery.model.dto;
 
+import com.egallery.model.entity.Role;
 import lombok.*;
 
 import java.util.Set;
@@ -13,6 +14,9 @@ import java.util.UUID;
 public class ApplicationUserDTO {
     private UUID id;
     private String username;
+    private String fullName;
     private String email;
-    private Set<String> roles;
+    private Set<Role> roles;
+    private String profilePictureUrl;
+    private String bio;
 }

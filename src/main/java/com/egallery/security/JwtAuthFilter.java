@@ -1,6 +1,5 @@
 package com.egallery.security;
 
-import com.egallery.model.entity.ApplicationUser;
 import com.egallery.repository.ApplicationUserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,14 +18,17 @@ import java.io.IOException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider tokenProvider;
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    private ApplicationUserRepository userRepository;
+    private final ApplicationUserRepository userRepository;
+
+    public JwtAuthFilter(JwtTokenProvider tokenProvider, CustomUserDetailsService userDetailsService, ApplicationUserRepository userRepository) {
+        this.tokenProvider = tokenProvider;
+        this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -47,9 +49,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             if (tokenProvider.validateToken(token)) {
-                var userId = tokenProvider.getUserIdFromJWT(token);
-                ApplicationUser user = userRepository.findById(userId).orElseThrow();
-                UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+                var username = tokenProvider.getUsernameFromJWT(token);
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()

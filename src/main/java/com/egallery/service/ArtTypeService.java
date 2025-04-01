@@ -7,7 +7,8 @@ import java.util.UUID;
 
 public interface ArtTypeService {
     ArtType create(ArtType entity);
-    ArtType getById(UUID id);
+    ArtType getById(Long id);
     List<ArtType> getAll();
-    void delete(UUID id);
+    void delete(Long id);
+
 }

@@ -22,7 +22,7 @@ public class ArtTypeController {
     }
 
     @GetMapping("/{id}")
-    public ArtType getById(@PathVariable UUID id) {
+    public ArtType getById(@PathVariable Long id) {
         return artTypeService.getById(id);
     }
 
@@ -32,7 +32,7 @@ public class ArtTypeController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
+    public void delete(@PathVariable Long id) {
         artTypeService.delete(id);
     }
 }

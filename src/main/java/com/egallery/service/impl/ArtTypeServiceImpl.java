@@ -22,9 +22,10 @@ public class ArtTypeServiceImpl implements ArtTypeService {
     }
 
     @Override
-    public ArtType getById(UUID id) {
-        return artTypeRepository.findById(id).orElse(null);
+    public ArtType getById(Long id) {
+        return artTypeRepository.getReferenceById(id);
     }
+
 
     @Override
     public List<ArtType> getAll() {
@@ -32,7 +33,7 @@ public class ArtTypeServiceImpl implements ArtTypeService {
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(Long id) {
         artTypeRepository.deleteById(id);
     }
 }
