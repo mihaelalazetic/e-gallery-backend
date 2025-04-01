@@ -1,6 +1,8 @@
 
 package com.egallery.service;
 
+import com.egallery.model.entity.ApplicationUser;
+import com.egallery.model.entity.InteractionTargetType;
 import com.egallery.model.entity.PostLike;
 
 import java.util.List;
@@ -11,4 +13,5 @@ public interface PostLikeService {
     PostLike getById(UUID id);
     List<PostLike> getAll();
     void delete(UUID id);
+    Long likePost(ApplicationUser user, UUID postId, InteractionTargetType targetType);
 }

@@ -4,6 +4,7 @@ package com.egallery.controller;
 import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.entity.ApplicationUser;
 import com.egallery.security.SecurityUtils;
+import com.egallery.service.ApplicationUserService;
 import com.egallery.service.impl.ApplicationUserServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class ApplicationUserController {
 
     @Autowired
-    private ApplicationUserServiceImpl userService;
+    private ApplicationUserService userService;
 
     @PostMapping
     public ApplicationUser create(@RequestBody ApplicationUser entity) {
@@ -46,9 +47,9 @@ public class ApplicationUserController {
         return SecurityUtils.getCurrentUser().mapToDto();
     }
 
-    @GetMapping("/featured-artists")
-    public ResponseEntity<List<Object[]>> getFeaturedArtists() {
-        return ResponseEntity.ok(userService.getFeaturedArtists());
+    @GetMapping("/most-liked-artists")
+    public ResponseEntity<List<ApplicationUserDTO>> getMostLikedArtists() {
+        return ResponseEntity.ok(userService.getMostLikedArtists());
     }
 
 }

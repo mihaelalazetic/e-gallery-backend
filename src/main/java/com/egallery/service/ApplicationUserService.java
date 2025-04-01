@@ -1,6 +1,7 @@
 
 package com.egallery.service;
 
+import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.entity.ApplicationUser;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public interface ApplicationUserService {
     ApplicationUser getById(UUID id);
     List<ApplicationUser> getAll();
     void delete(UUID id);
+    List<ApplicationUserDTO> getMostLikedArtists();
 }

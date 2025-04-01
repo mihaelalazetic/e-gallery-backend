@@ -71,14 +71,20 @@ public class ApplicationUser extends BaseEntity implements UserDetails {
     }
 
     public ApplicationUserDTO mapToDto() {
+        return mapToDto(null);
+    }
+
+    public ApplicationUserDTO mapToDto(Long totalLikes) {
         return ApplicationUserDTO.builder()
                 .id(getId())
                 .username(getUsername())
                 .email(getEmail())
                 .fullName(getFullName())
+                .bio(getBio())
                 .profilePictureUrl(getProfilePictureUrl())
                 .roles(getRoles())
+                .totalLikes(totalLikes)
                 .build();
-
     }
+
 }

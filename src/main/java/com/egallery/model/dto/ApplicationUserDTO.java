@@ -19,4 +19,5 @@ public class ApplicationUserDTO {
     private Set<Role> roles;
     private String profilePictureUrl;
     private String bio;
+    private Long totalLikes;
 }

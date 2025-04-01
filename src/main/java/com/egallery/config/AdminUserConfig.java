@@ -31,6 +31,7 @@ public class AdminUserConfig {
             if (userRepo.findAll().isEmpty()) {
                 ApplicationUser admin = new ApplicationUser();
                 admin.setUsername("admin");
+                admin.setUsername("Admin Admin");
                 admin.setEmail("admin@egallery.com");
                 admin.setPassword(passwordEncoder.encode("123"));
                 admin.setSlug("admin");
