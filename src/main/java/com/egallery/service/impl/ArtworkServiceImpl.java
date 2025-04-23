@@ -10,11 +10,11 @@ import com.egallery.repository.ArtworkRepository;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ArtworkService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -74,6 +74,27 @@ public class ArtworkServiceImpl implements ArtworkService {
     public List<Artwork> findLimited(int limit) {
         Pageable pageable = PageRequest.of(0, limit, Sort.by("createdAt").descending());
         return artworkRepository.findAll(pageable).getContent();
+    }
+
+
+    /**
+     * @param page zero-based page index
+     * @param size maximum number of items per page
+     * @return a Page of “featured” art (top liked, but in random order)
+     */
+    public Page<Artwork> getFeaturedArt(int page, int size) {
+        Page<Artwork> likedPage =
+                artworkRepository.findAllOrderByLikesDesc(PageRequest.of(page, size));
+
+        // random order of featured
+        List<Artwork> shuffled = new ArrayList<>(likedPage.getContent());
+        Collections.shuffle(shuffled);
+
+        return new PageImpl<>(
+                shuffled,
+                likedPage.getPageable(),
+                likedPage.getTotalElements()
+        );
     }
 
     public List<Artwork> findPaginated(int page, int size) {

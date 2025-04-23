@@ -75,16 +75,22 @@ public class ApplicationUser extends BaseEntity implements UserDetails {
     }
 
     public ApplicationUserDTO mapToDto(Long totalLikes) {
+        // Convert each Role into its name (e.g. "USER", "ADMIN")
+        Set<String> roleNames = getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+
         return ApplicationUserDTO.builder()
                 .id(getId())
                 .username(getUsername())
-                .email(getEmail())
                 .fullName(getFullName())
+                .email(getEmail())
                 .bio(getBio())
                 .profilePictureUrl(getProfilePictureUrl())
-                .roles(getRoles())
+                .roles(roleNames)      // now a Set<String>
                 .totalLikes(totalLikes)
                 .build();
     }
+
 
 }

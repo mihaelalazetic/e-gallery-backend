@@ -3,6 +3,7 @@ package com.egallery.service;
 
 import com.egallery.model.dto.ArtworkUploadRequest;
 import com.egallery.model.entity.Artwork;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface ArtworkService {
     List<Artwork> findPaginated(int page, int size);
 
     List<Artwork> findLimited(int limit);
+
+    Page<Artwork> getFeaturedArt(int page, int size);
 }

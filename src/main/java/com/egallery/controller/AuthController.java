@@ -1,4 +1,5 @@
 package com.egallery.controller;
+// src/main/java/com/egallery/controller/AuthController.java
 
 import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.dto.JwtAuthResponse;
@@ -19,14 +20,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.token.TokenService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -47,21 +48,21 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Value("${jwt.expiration}")
     private long jwtExpirationInMs;
 
     @PostMapping("/signup")
-    public String registerUser(@RequestBody SignupRequest request) {
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequest request) {
         if (userRepo.existsByEmail(request.getEmail())) {
-            return "Email already in use";
+            return ResponseEntity.badRequest().body("Email already in use");
         }
         if (userRepo.existsByUsername(request.getUsername())) {
-            return "Username already in use";
+            return ResponseEntity.badRequest().body("Username already in use");
         }
-        if(!Objects.equals(request.getPassword(), request.getConfirmPassword())){
-            return "Password is not the same";
+        if (!Objects.equals(request.getPassword(), request.getConfirmPassword())) {
+            return ResponseEntity.badRequest().body("Passwords do not match");
         }
+
         ApplicationUser user = new ApplicationUser();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
@@ -70,6 +71,7 @@ public class AuthController {
         user.setBio(request.getBio());
         user.setFullName(request.getFullName());
         user.setProfilePictureUrl(request.getProfilePictureUrl());
+
         Set<Role> roles = new HashSet<>();
         if (request.getRole() != null) {
             Role role = roleRepo.findByName(RoleName.valueOf(request.getRole().toUpperCase()))
@@ -78,10 +80,10 @@ public class AuthController {
         } else {
             roles.add(roleRepo.findByName(RoleName.USER).orElseThrow());
         }
-
         user.setRoles(roles);
+
         userRepo.save(user);
-        return "User registered successfully";
+        return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
@@ -89,21 +91,47 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername(), // 👈 matches the DTO
+                            loginRequest.getUsername(),
                             loginRequest.getPassword()
                     )
             );
 
+            // load full user
             ApplicationUser user = userRepo.findByUsername(loginRequest.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             String token = jwtTokenProvider.generateToken(user.getUsername());
 
-            return ResponseEntity.ok(new JwtAuthResponse(token, jwtExpirationInMs));
+            JwtAuthResponse resp = new JwtAuthResponse(token, jwtExpirationInMs);
+            return ResponseEntity.ok(resp);
+
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
 
+    /**
+     * Returns the currently authenticated user.
+     */
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApplicationUserDTO> getCurrentUser(
+            Authentication authentication   // Spring injects this for you
+    ) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
+        // 1) Get the username from the authentication token
+        String username = authentication.getName();
+
+        // 2) Load the full ApplicationUser entity
+        ApplicationUser user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 3) Map to DTO (your existing helper)
+        ApplicationUserDTO dto = user.mapToDto();
+
+        return ResponseEntity.ok(dto);
+    }
 }

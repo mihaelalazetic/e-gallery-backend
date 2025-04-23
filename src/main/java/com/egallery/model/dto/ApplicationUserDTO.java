@@ -16,7 +16,7 @@ public class ApplicationUserDTO {
     private String username;
     private String fullName;
     private String email;
-    private Set<Role> roles;
+    private Set<String> roles;
     private String profilePictureUrl;
     private String bio;
     private Long totalLikes;

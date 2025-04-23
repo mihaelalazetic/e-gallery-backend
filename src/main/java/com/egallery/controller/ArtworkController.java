@@ -5,7 +5,9 @@ import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.dto.ArtworkUploadRequest;
 import com.egallery.model.entity.Artwork;
 import com.egallery.service.ArtworkService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -72,6 +74,15 @@ public class ArtworkController {
     public ResponseEntity<?> uploadArtwork(@RequestBody ArtworkUploadRequest request) {
         artworkService.uploadArtwork(request);
         return ResponseEntity.ok("Uploaded");
+    }
+
+
+    @GetMapping("/featured")
+    public Page<Artwork> featured(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        return artworkService.getFeaturedArt(page, size);
     }
 
 

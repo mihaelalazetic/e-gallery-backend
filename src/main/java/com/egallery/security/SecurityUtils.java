@@ -23,4 +23,12 @@ public class SecurityUtils {
         return staticUserRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    public static String getCurrentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new RuntimeException("No authenticated user");
+        }
+        return auth.getName();
+    }
 }
