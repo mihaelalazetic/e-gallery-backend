@@ -4,7 +4,6 @@ package com.egallery.service;
 import com.egallery.model.dto.ArtworkUploadRequest;
 import com.egallery.model.entity.Artwork;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.UUID;

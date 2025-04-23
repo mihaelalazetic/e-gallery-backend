@@ -1,6 +1,5 @@
 package com.egallery.model.dto;
 
-import com.egallery.model.entity.Role;
 import lombok.*;
 
 import java.util.Set;

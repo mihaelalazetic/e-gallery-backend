@@ -24,11 +24,4 @@ public class SecurityUtils {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public static String getCurrentUsername() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new RuntimeException("No authenticated user");
-        }
-        return auth.getName();
-    }
 }
