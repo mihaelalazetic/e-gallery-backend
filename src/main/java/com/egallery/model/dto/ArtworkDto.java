@@ -1,10 +1,9 @@
 package com.egallery.model.dto;
 
-import com.egallery.model.entity.Artwork;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.UUID;

@@ -3,11 +3,8 @@ package com.egallery.controller;
 
 import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.entity.ApplicationUser;
-import com.egallery.repository.ArtTypeRepository;
-import com.egallery.repository.ArtworkRepository;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ApplicationUserService;
-import com.egallery.service.impl.ApplicationUserServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
