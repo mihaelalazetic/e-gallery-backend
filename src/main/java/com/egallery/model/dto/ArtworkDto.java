@@ -22,15 +22,6 @@ public class ArtworkDto {
     private ApplicationUserDTO artist;
     private Long likes;
     private Long comments;
+    private boolean liked;
 
-    public ArtworkDto(Artwork artwork) {
-        this.id = artwork.getId();
-        this.title = artwork.getTitle();
-        this.imageUrl = artwork.getImageUrl();
-        this.artist = artwork.getArtist().mapToDto();
-        this.price = artwork.getPrice();
-        this.description = artwork.getDescription();
-        this.likes = 5L;
-        this.comments = 3L;
-    }
 }

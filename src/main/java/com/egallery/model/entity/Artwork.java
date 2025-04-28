@@ -1,6 +1,7 @@
 
 package com.egallery.model.entity;
 
+import com.egallery.model.dto.ArtworkDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,7 +29,7 @@ public class Artwork extends BaseEntity {
     // In Artwork.java
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artist_id")
-    @JsonIgnore // this alone will solve it for now
+//    @JsonIgnore // this alone will solve it for now
     private ApplicationUser artist;
 
 
@@ -49,5 +50,25 @@ public class Artwork extends BaseEntity {
     @OrderBy("createdAt ASC")
     private List<Comment> comments;
 
+    public ArtworkDto toDto(ApplicationUser currentUser) {
+        ArtworkDto dto = new ArtworkDto();
+        dto.setId(getId());
+        dto.setTitle(getTitle());
+        dto.setImageUrl(getImageUrl());
+        dto.setDescription(getDescription());
+        dto.setPrice(getPrice());
+        dto.setArtist(getArtist().mapToDto());
+        dto.setLikes((long)(likes==null?0:likes.size()));
+        dto.setComments((long)(comments==null?0:comments.size()));
+
+        boolean isLiked = false;
+        if (currentUser != null && likes != null) {
+            isLiked = likes.stream()
+                    .anyMatch(pl -> pl.getApplicationUser().getId()
+                            .equals(currentUser.getId()));
+        }
+        dto.setLiked(isLiked);
+        return dto;
+    }
 
 }

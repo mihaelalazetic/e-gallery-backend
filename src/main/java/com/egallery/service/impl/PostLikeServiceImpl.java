@@ -5,8 +5,8 @@ import com.egallery.model.entity.ApplicationUser;
 import com.egallery.model.entity.InteractionTargetType;
 import com.egallery.repository.PostLikeRepository;
 import com.egallery.service.PostLikeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +15,11 @@ import java.util.UUID;
 @Service
 public class PostLikeServiceImpl implements PostLikeService {
 
-    @Autowired
-    private PostLikeRepository likeRepository;
+    private final PostLikeRepository likeRepository;
+
+    public PostLikeServiceImpl(PostLikeRepository likeRepository) {
+        this.likeRepository = likeRepository;
+    }
 
     @Override
     public PostLike create(PostLike entity) {
@@ -38,20 +41,28 @@ public class PostLikeServiceImpl implements PostLikeService {
         likeRepository.deleteById(id);
     }
 
+    /**
+     * Toggle a like: if already liked → unlike; else → like.
+     * Returns the new total likes count.
+     */
     @Override
-    public Long likePost(ApplicationUser user, UUID postId,InteractionTargetType targetType) {
-        // Check if the like already exists for the user and this post
-        Optional<PostLike> existingLike = likeRepository.findByApplicationUserAndTargetIdAndTargetType(user, postId, targetType);
-//        if(existingLike.isPresent()){
-//            // Optionally, you can return the existing like or throw an exception.
-//            return existingLike.get();
-//        }
+    @Transactional
+    public Long likePost(ApplicationUser user, UUID postId, InteractionTargetType targetType) {
+        Optional<PostLike> existing = likeRepository
+                .findByApplicationUserAndTargetIdAndTargetType(user, postId, targetType);
 
-        // Create and save a new PostLike
-        PostLike newLike = new PostLike();
-        newLike.setApplicationUser(user);
-        newLike.setTargetId(postId);
-        newLike.setTargetType(targetType);likeRepository.save(newLike);
+        if (existing.isPresent()) {
+            // Unlike
+            likeRepository.delete(existing.get());
+        } else {
+            // Like
+            PostLike newLike = new PostLike();
+            newLike.setApplicationUser(user);
+            newLike.setTargetId(postId);
+            newLike.setTargetType(targetType);
+            likeRepository.save(newLike);
+        }
+
         return likeRepository.countAllByTargetId(postId);
     }
 }

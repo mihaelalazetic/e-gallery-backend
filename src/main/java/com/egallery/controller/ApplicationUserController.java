@@ -3,6 +3,8 @@ package com.egallery.controller;
 
 import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.entity.ApplicationUser;
+import com.egallery.repository.ArtTypeRepository;
+import com.egallery.repository.ArtworkRepository;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ApplicationUserService;
 import com.egallery.service.impl.ApplicationUserServiceImpl;
@@ -22,6 +24,12 @@ public class ApplicationUserController {
     @Autowired
     private ApplicationUserService userService;
 
+    private final SecurityUtils securityUtils;
+
+    public ApplicationUserController(ApplicationUserService userService, SecurityUtils securityUtils) {
+        this.userService = userService;
+        this.securityUtils = securityUtils;
+    }
     @PostMapping
     public ApplicationUser create(@RequestBody ApplicationUser entity) {
         return userService.create(entity);
@@ -44,7 +52,7 @@ public class ApplicationUserController {
 
     @GetMapping("/getCurrentUser")
     public ApplicationUserDTO getCurrentUser() {
-        return SecurityUtils.getCurrentUser().mapToDto();
+        return securityUtils.getCurrentUser().mapToDto();
     }
 
     @GetMapping("/most-liked-artists")

@@ -22,6 +22,6 @@ public class AppInitConfig {
         SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
         System.out.println(Base64.getEncoder().encodeToString(key.getEncoded()));
 
-        SecurityUtils.init(userRepository);
+        new SecurityUtils(userRepository);
     }
 }

@@ -47,20 +47,32 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String authToken) {
-        try {
-            if (authToken.split("\\.").length != 3) {
-                log.error("Invalid JWT format: expected 3 parts but got {}", authToken.split("\\.").length);
-                return false;
-            }
+        // quick sanity check
+        if (authToken == null || authToken.split("\\.").length != 3) {
+            log.error("Invalid JWT format: expected 3 parts but got {}",
+                    authToken == null ? null : authToken.split("\\.").length);
+            return false;
+        }
 
+        try {
             Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
+                    // allow up to 60 seconds of clock skew
+                    .setAllowedClockSkewSeconds(60)
                     .build()
-                    .parseClaimsJws(authToken); // Using same signing key
-
+                    .parseClaimsJws(authToken);
             return true;
+
+        } catch (ExpiredJwtException ex) {
+            // token is expired—but we handle it gracefully
+            Date expiredAt = ex.getClaims().getExpiration();
+            Date now = new Date();
+            log.info("JWT expired at {}; current time {}", expiredAt, now);
+            return false;
+
         } catch (JwtException ex) {
-            log.error("Invalid JWT token: {}", ex.getMessage());  // Add logging if needed
+            // any other parsing/signature problems
+            log.error("Invalid JWT token: {}", ex.getMessage());
             return false;
         }
     }

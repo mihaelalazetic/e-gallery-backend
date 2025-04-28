@@ -36,6 +36,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         // Bypass JWT processing for Swagger and authentication endpoints
         String servletPath = request.getServletPath();
+        String method = request.getMethod();
         if (servletPath.startsWith("/swagger-ui") ||
                 servletPath.startsWith("/v3/api-docs") ||
                 servletPath.startsWith("/webjars") ||
@@ -43,7 +44,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
+        // 2) Public featured-art endpoint
+//        if ("GET".equalsIgnoreCase(method) &&
+//                "/api/artworks/featured".equals(servletPath)) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
         String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {

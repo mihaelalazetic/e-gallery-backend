@@ -1,27 +1,35 @@
+// src/main/java/com/egallery/security/SecurityUtils.java
 package com.egallery.security;
 
-
+import com.egallery.model.entity.ApplicationUser;
 import com.egallery.repository.ApplicationUserRepository;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.egallery.model.entity.ApplicationUser;
+import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+@Component
 public class SecurityUtils {
+    private final ApplicationUserRepository userRepository;
 
-    private static ApplicationUserRepository staticUserRepo;
-
-    public static void init(ApplicationUserRepository userRepository) {
-        staticUserRepo = userRepository;
+    public SecurityUtils(ApplicationUserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public static ApplicationUser getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Not authenticated");
+    /**
+     * Return the currently authenticated user, or null if none.
+     */
+    public ApplicationUser getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null
+                || !auth.isAuthenticated()
+                || auth instanceof AnonymousAuthenticationToken) {
+            return null;    // anonymous
         }
-        String username = authentication.getName();
-        return staticUserRepo.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        String username = auth.getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
 }

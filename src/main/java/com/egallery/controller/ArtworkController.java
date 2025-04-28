@@ -3,9 +3,10 @@ package com.egallery.controller;
 
 import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.dto.ArtworkUploadRequest;
+import com.egallery.model.entity.ApplicationUser;
 import com.egallery.model.entity.Artwork;
+import com.egallery.security.SecurityUtils;
 import com.egallery.service.ArtworkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +15,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/artworks")
 public class ArtworkController {
 
-    @Autowired
-    private ArtworkService artworkService;
+    private final ArtworkService artworkService;
+    private final SecurityUtils securityUtils;
+
+    public ArtworkController(ArtworkService artworkService, SecurityUtils securityUtils) {
+        this.artworkService = artworkService;
+        this.securityUtils = securityUtils;
+    }
+
 
     @PostMapping
     public Artwork create(@RequestBody Artwork entity) {
@@ -37,29 +45,29 @@ public class ArtworkController {
             @RequestParam(required = false) Integer limit,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
-            Authentication authentication // Spring injects this
+            Authentication authentication
     ) {
         boolean isAuthenticated = authentication != null && authentication.isAuthenticated();
 
-        // If user is NOT logged in and limit is not set → block it
         if (!isAuthenticated && limit == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<Artwork> artworks;
+        List<Artwork> artworks = (limit != null)
+                ? artworkService.findLimited(limit)
+                : artworkService.findPaginated(page, size);
 
-        if (limit != null) {
-            artworks = artworkService.findLimited(limit);
-        } else {
-            artworks = artworkService.findPaginated(page, size);
-        }
+        // fetch the current user once
+        ApplicationUser currentUser = securityUtils.getCurrentUser();
 
+        // map each Artwork → ArtworkDto with liked state
         List<ArtworkDto> response = artworks.stream()
-                .map(ArtworkDto::new)
-                .toList();
+                .map(a -> a.toDto(currentUser))
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(response);
     }
+
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
@@ -75,7 +83,7 @@ public class ArtworkController {
 
 
     @GetMapping("/featured")
-    public Page<Artwork> featured(
+    public Page<ArtworkDto> featured(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size
     ) {

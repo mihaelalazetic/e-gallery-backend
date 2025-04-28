@@ -1,6 +1,7 @@
 
 package com.egallery.service;
 
+import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.dto.ArtworkUploadRequest;
 import com.egallery.model.entity.Artwork;
 import org.springframework.data.domain.Page;
@@ -23,5 +24,5 @@ public interface ArtworkService {
 
     List<Artwork> findLimited(int limit);
 
-    Page<Artwork> getFeaturedArt(int page, int size);
+    Page<ArtworkDto> getFeaturedArt(int page, int size);
 }

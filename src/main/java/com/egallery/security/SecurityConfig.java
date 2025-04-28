@@ -70,19 +70,19 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/webjars/**",
-                                "/swagger-ui.html",
-                                "/api/artworks"           // ✅ allow limited artwork access for guests
+                                "/webjars/**"
                         ).permitAll()
-                        .requestMatchers("/api/artworks/**").authenticated()
+                        .requestMatchers("/api/artworks/featured").permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
 
+    }
 
 
 }
