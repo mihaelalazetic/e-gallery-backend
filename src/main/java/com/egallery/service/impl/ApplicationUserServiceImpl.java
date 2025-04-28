@@ -5,7 +5,8 @@ import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.entity.ApplicationUser;
 import com.egallery.repository.ApplicationUserRepository;
 import com.egallery.service.ApplicationUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.egallery.service.ArtworkService;
+import com.egallery.service.SubscriptionService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,8 +17,16 @@ import java.util.UUID;
 @Service
 public class ApplicationUserServiceImpl implements ApplicationUserService {
 
-    @Autowired
-    private ApplicationUserRepository userRepository;
+
+    private final ApplicationUserRepository userRepository;
+    private final SubscriptionService subscriptionService;
+    private final ArtworkService artworkService;
+
+    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository, SubscriptionService subscriptionService, ArtworkService artworkService) {
+        this.userRepository = userRepository;
+        this.subscriptionService = subscriptionService;
+        this.artworkService = artworkService;
+    }
 
     @Override
     public ApplicationUser create(ApplicationUser entity) {
@@ -38,6 +47,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
     public void delete(UUID id) {
         userRepository.deleteById(id);
     }
+
     public List<ApplicationUserDTO> getMostLikedArtists() {
         List<Object[]> users = userRepository.findMostLikedArtists();
         List<ApplicationUserDTO> dtos = new ArrayList<>();
@@ -48,8 +58,13 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
             String username = (String) row[1];
             Long totalLikes = ((Number) row[2]).longValue();
             Optional<ApplicationUser> user = userRepository.findById(userId);
-            ApplicationUserDTO dto;
-            user.ifPresent(applicationUser -> dtos.add(applicationUser.mapToDto(totalLikes)));
+
+            Long followers = subscriptionService.countSubscribers(userId);
+            boolean following = user.isPresent()
+                    && subscriptionService.isSubscribed(user.get(), userId);
+            Long artCount = artworkService.countByUserId(userId);
+
+            user.ifPresent(applicationUser -> dtos.add(applicationUser.mapToDto(totalLikes, followers, following, artCount)));
         }
 
         return dtos;

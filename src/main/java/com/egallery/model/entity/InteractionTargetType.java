@@ -5,5 +5,6 @@ public enum InteractionTargetType {
     ARTWORK,
     EXHIBITION,
     EVENT,
-    COMMENT
+    COMMENT,
+    USER,
 }

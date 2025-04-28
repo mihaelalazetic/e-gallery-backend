@@ -19,4 +19,8 @@ public class ApplicationUserDTO {
     private String profilePictureUrl;
     private String bio;
     private Long totalLikes;
+
+    private Long followerCount;
+    private Boolean isFollowing;
+    private Long artCount;
 }

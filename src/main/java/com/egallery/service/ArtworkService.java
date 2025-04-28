@@ -25,4 +25,6 @@ public interface ArtworkService {
     List<Artwork> findLimited(int limit);
 
     Page<ArtworkDto> getFeaturedArt(int page, int size);
+
+    Long countByUserId(UUID userId);
 }

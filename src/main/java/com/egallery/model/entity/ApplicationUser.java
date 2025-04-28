@@ -71,10 +71,10 @@ public class ApplicationUser extends BaseEntity implements UserDetails {
     }
 
     public ApplicationUserDTO mapToDto() {
-        return mapToDto(null);
+        return mapToDto(null, null, null,null);
     }
 
-    public ApplicationUserDTO mapToDto(Long totalLikes) {
+    public ApplicationUserDTO mapToDto(Long totalLikes, Long followerCount, Boolean isFollowing, Long artCount) {
         // Convert each Role into its name (e.g. "USER", "ADMIN")
         Set<String> roleNames = getRoles().stream()
                 .map(role -> role.getName().name())
@@ -89,6 +89,9 @@ public class ApplicationUser extends BaseEntity implements UserDetails {
                 .profilePictureUrl(getProfilePictureUrl())
                 .roles(roleNames)      // now a Set<String>
                 .totalLikes(totalLikes)
+                .followerCount(followerCount)
+                .isFollowing(isFollowing)
+                .artCount(artCount)
                 .build();
     }
 

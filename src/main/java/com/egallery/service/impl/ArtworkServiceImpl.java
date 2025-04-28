@@ -119,4 +119,8 @@ public class ArtworkServiceImpl implements ArtworkService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return artworkRepository.findAll(pageable).getContent();
     }
+
+    public Long countByUserId(UUID userId) {
+        return artworkRepository.countByArtistId(userId);
+    }
 }

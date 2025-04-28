@@ -19,4 +19,6 @@ public interface ArtworkRepository extends JpaRepository<Artwork, UUID> {
       ORDER BY COUNT(l) DESC
       """)
     Page<Artwork> findAllOrderByLikesDesc(Pageable pageable);
+
+    Long countByArtistId(UUID userId);
 }
