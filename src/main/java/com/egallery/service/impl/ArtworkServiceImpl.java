@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ArtworkServiceImpl implements ArtworkService {
@@ -123,4 +124,27 @@ public class ArtworkServiceImpl implements ArtworkService {
     public Long countByUserId(UUID userId) {
         return artworkRepository.countByArtistId(userId);
     }
+
+    @Override
+    public List<ArtworkDto> getTopArtworksForArtist(UUID artistId, int limit) {
+        Pageable pageReq = PageRequest.of(0, limit);
+        List<Artwork> top = artworkRepository
+                .findTopByArtistOrderByLikesDesc(artistId, pageReq);
+
+        ApplicationUser current = securityUtils.getCurrentUser();
+        return top.stream()
+                .map(a -> {
+                    ArtworkDto dto = a.toDto(current);
+                    dto.setLikes((long) a.getLikes().size());
+                    dto.setComments((long) a.getComments().size());
+                    dto.setLiked(
+                            current != null &&
+                                    a.getLikes().stream()
+                                            .anyMatch(pl -> pl.getApplicationUser().getId().equals(current.getId()))
+                    );
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 }
+

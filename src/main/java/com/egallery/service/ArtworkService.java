@@ -27,4 +27,8 @@ public interface ArtworkService {
     Page<ArtworkDto> getFeaturedArt(int page, int size);
 
     Long countByUserId(UUID userId);
+
+    // ArtworkService.java
+    List<ArtworkDto> getTopArtworksForArtist(UUID artistId, int limit);
+
 }
