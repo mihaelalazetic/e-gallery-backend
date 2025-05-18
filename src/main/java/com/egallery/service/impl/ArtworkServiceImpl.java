@@ -3,32 +3,29 @@ package com.egallery.service.impl;
 import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.dto.ArtworkUploadRequest;
 import com.egallery.model.entity.ApplicationUser;
-import com.egallery.model.entity.ArtType;
 import com.egallery.model.entity.Artwork;
-import com.egallery.repository.ArtTypeRepository;
+import com.egallery.model.entity.Category;
 import com.egallery.repository.ArtworkRepository;
+import com.egallery.repository.CategoryRepository;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ArtworkService;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ArtworkServiceImpl implements ArtworkService {
 
     private final ArtworkRepository artworkRepository;
-    private final ArtTypeRepository artTypeRepository;
+    private final CategoryRepository categoryRepository;
     private final SecurityUtils securityUtils;
 
     public ArtworkServiceImpl(ArtworkRepository artworkRepository,
-                              ArtTypeRepository artTypeRepository, SecurityUtils securityUtils) {
+                              CategoryRepository categoryRepository, SecurityUtils securityUtils) {
         this.artworkRepository = artworkRepository;
-        this.artTypeRepository = artTypeRepository;
+        this.categoryRepository = categoryRepository;
         this.securityUtils = securityUtils;
     }
 
@@ -38,8 +35,8 @@ public class ArtworkServiceImpl implements ArtworkService {
     }
 
     @Override
-    public Artwork getById(UUID id) {
-        return artworkRepository.findById(id).orElse(null);
+    public ArtworkDto getById(UUID id) {
+        return Objects.requireNonNull(artworkRepository.findById(id).orElse(null)).toDto(securityUtils.getCurrentUser());
     }
 
     @Override
@@ -56,8 +53,10 @@ public class ArtworkServiceImpl implements ArtworkService {
     public void uploadArtwork(ArtworkUploadRequest request) {
         ApplicationUser artist = securityUtils.getCurrentUser();
 
-        ArtType artType = artTypeRepository.findById(request.getArtTypeId())
-                .orElseThrow(() -> new IllegalArgumentException("Art type not found"));
+        List<Category> categories = categoryRepository.findAllById(request.getCategoryIds());
+        if (categories.isEmpty()) {
+            throw new IllegalArgumentException("Art type not found");
+        }
 
         Artwork artwork = new Artwork();
         artwork.setTitle(request.getTitle());
@@ -67,7 +66,7 @@ public class ArtworkServiceImpl implements ArtworkService {
         artwork.setVisibility(request.getVisibility());
         artwork.setSlug(generateSlug(request.getTitle()));
         artwork.setArtist(artist);
-        artwork.setArtType(artType);
+        artwork.setCategories(new HashSet<>(categories));
 
         artworkRepository.save(artwork);
     }
@@ -98,7 +97,7 @@ public class ArtworkServiceImpl implements ArtworkService {
                     dto.setPrice(a.getPrice());
                     dto.setArtist(a.getArtist().mapToDto());
                     dto.setLikes((long) a.getLikes().size());
-                    dto.setComments((long) a.getComments().size());
+                    dto.setCommentCount((long) a.getComments().size());
                     boolean isLiked = current != null && a.getLikes().stream()
                             .anyMatch(pl -> pl.getApplicationUser().getId().equals(current.getId()));
                     dto.setLiked(isLiked);
@@ -136,7 +135,7 @@ public class ArtworkServiceImpl implements ArtworkService {
                 .map(a -> {
                     ArtworkDto dto = a.toDto(current);
                     dto.setLikes((long) a.getLikes().size());
-                    dto.setComments((long) a.getComments().size());
+                    dto.setCommentCount((long) a.getComments().size());
                     dto.setLiked(
                             current != null &&
                                     a.getLikes().stream()
@@ -145,6 +144,11 @@ public class ArtworkServiceImpl implements ArtworkService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<Artwork> findPaginatedWithFilters(int page, int size, String search, List<String> categories, Integer priceMin, Integer priceMax) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return artworkRepository.findAll(ArtworkSpecification.withFilters(search, categories, priceMin, priceMax), pageable).getContent();
     }
 }
 

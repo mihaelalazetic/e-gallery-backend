@@ -5,14 +5,15 @@ import com.egallery.model.entity.Artwork;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface ArtworkRepository extends JpaRepository<Artwork, UUID> {
-    @Query(
+public interface ArtworkRepository extends JpaRepository<Artwork, UUID>, JpaSpecificationExecutor<Artwork>{
+@Query(
             value = """
       SELECT a
       FROM Artwork a
@@ -34,4 +35,6 @@ public interface ArtworkRepository extends JpaRepository<Artwork, UUID> {
     List<Artwork> findTopByArtistOrderByLikesDesc(
             @Param("artistId") UUID artistId, Pageable pageable
     );
+
+    Page<Artwork> findAll(Pageable pageable);
 }

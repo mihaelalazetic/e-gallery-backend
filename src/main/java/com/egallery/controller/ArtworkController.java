@@ -35,34 +35,27 @@ public class ArtworkController {
         return artworkService.create(entity);
     }
 
-    @GetMapping("/{id}")
-    public Artwork getById(@PathVariable UUID id) {
+    @GetMapping("/getById/{id}")
+    public ArtworkDto getById(@PathVariable UUID id) {
         return artworkService.getById(id);
     }
 
     @GetMapping
     public ResponseEntity<List<ArtworkDto>> getArtworks(
-            @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size,
-            Authentication authentication
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) List<String> categories,
+            @RequestParam(required = false) Integer priceMin,
+            @RequestParam(required = false) Integer priceMax
     ) {
-        boolean isAuthenticated = authentication != null && authentication.isAuthenticated();
+            List<Artwork> artworks = artworkService.findPaginatedWithFilters(page, size, search, categories, priceMin, priceMax);
 
-        if (!isAuthenticated && limit == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        List<Artwork> artworks = (limit != null)
-                ? artworkService.findLimited(limit)
-                : artworkService.findPaginated(page, size);
-
-        // fetch the current user once
-        ApplicationUser currentUser = securityUtils.getCurrentUser();
-
-        // map each Artwork → ArtworkDto with liked state
         List<ArtworkDto> response = artworks.stream()
-                .map(a -> a.toDto(currentUser))
+                .map(artwork -> {
+                    ApplicationUser currentUser = securityUtils.getCurrentUser();
+                    return artwork.toDto(currentUser);
+                })
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(response);
@@ -82,13 +75,7 @@ public class ArtworkController {
     }
 
 
-    @GetMapping("/featured")
-    public Page<ArtworkDto> featured(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size
-    ) {
-        return artworkService.getFeaturedArt(page, size);
-    }
+
 
 
 }

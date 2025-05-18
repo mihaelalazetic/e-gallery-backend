@@ -7,6 +7,7 @@ import com.egallery.model.entity.ApplicationUser;
 import com.egallery.model.entity.Artwork;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ArtworkService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,10 @@ public class FeaturedController {
         this.artworkService = artworkService;
     }
 
-    /** GET /api/featured/artist/{id}/top-artworks?limit=5 */
+    @Operation(
+            description = "Get featured artworks for a specific artist",
+            summary = "Get featured artworks"
+    )
     @GetMapping("/artist/{artistId}/top-artworks")
     public ResponseEntity<List<ArtworkDto>> topArtworks(
             @PathVariable UUID artistId,
@@ -36,5 +40,18 @@ public class FeaturedController {
         List<ArtworkDto> list =
                 artworkService.getTopArtworksForArtist(artistId, limit);
         return ResponseEntity.ok(list);
+    }
+
+
+    @GetMapping("/artworks")
+    @Operation(
+            description = "Get featured artworks",
+            summary = "Get featured artworks"
+    )
+    public Page<ArtworkDto> featured(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        return artworkService.getFeaturedArt(page, size);
     }
 }

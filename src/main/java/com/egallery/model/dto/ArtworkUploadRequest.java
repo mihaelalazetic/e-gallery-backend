@@ -4,7 +4,7 @@ package com.egallery.model.dto;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.UUID;
+import java.util.List;
 
 @Data
 public class ArtworkUploadRequest {
@@ -13,5 +13,5 @@ public class ArtworkUploadRequest {
     private BigDecimal price;
     private String dimensions;
     private String visibility;
-    private Long artTypeId; // selected from dropdown on frontend
+    private List<Long> categoryIds; // selected from dropdown on frontend
 }

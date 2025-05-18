@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface ArtworkService {
     Artwork create(Artwork entity);
 
-    Artwork getById(UUID id);
+    ArtworkDto getById(UUID id);
 
     List<Artwork> getAll();
 
@@ -30,5 +30,7 @@ public interface ArtworkService {
 
     // ArtworkService.java
     List<ArtworkDto> getTopArtworksForArtist(UUID artistId, int limit);
+
+    List<Artwork> findPaginatedWithFilters(int page, int size, String search, List<String> categories, Integer priceMin, Integer priceMax);
 
 }

@@ -32,4 +32,16 @@ public class SecurityUtils {
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
+    public ApplicationUser getCurrentUser2() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null
+                || !auth.isAuthenticated()
+                || auth instanceof AnonymousAuthenticationToken) {
+            return null;    // anonymous
+        }
+        String username = auth.getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+    }
+
 }

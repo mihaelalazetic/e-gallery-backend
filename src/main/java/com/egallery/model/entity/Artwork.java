@@ -2,6 +2,7 @@
 package com.egallery.model.entity;
 
 import com.egallery.model.dto.ArtworkDto;
+import com.egallery.security.SecurityUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -26,15 +28,22 @@ public class Artwork extends BaseEntity {
     private String dimensions;
     private String visibility;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "artwork_categories",
+            joinColumns = @JoinColumn(name = "artwork_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
+
+
     // In Artwork.java
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artist_id")
+    @JsonIgnore
 //    @JsonIgnore // this alone will solve it for now
     private ApplicationUser artist;
 
-
-    @ManyToOne
-    private ArtType artType;
 
     @ManyToMany(mappedBy = "artworks")
     private Set<Exhibition> exhibitions = new HashSet<>();
@@ -51,6 +60,7 @@ public class Artwork extends BaseEntity {
     private List<Comment> comments;
 
     public ArtworkDto toDto(ApplicationUser currentUser) {
+
         ArtworkDto dto = new ArtworkDto();
         dto.setId(getId());
         dto.setTitle(getTitle());
@@ -59,7 +69,8 @@ public class Artwork extends BaseEntity {
         dto.setPrice(getPrice());
         dto.setArtist(getArtist().mapToDto());
         dto.setLikes((long)(likes==null?0:likes.size()));
-        dto.setComments((long)(comments==null?0:comments.size()));
+        dto.setCommentCount((long)(comments==null?0:comments.size()));
+        dto.setCategories(categories.stream().map(Category::getName).collect(Collectors.toList()));
 
         boolean isLiked = false;
         if (currentUser != null && likes != null) {

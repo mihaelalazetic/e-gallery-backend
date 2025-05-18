@@ -1,11 +1,14 @@
 package com.egallery.model.dto;
 
+import com.egallery.model.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -19,8 +22,10 @@ public class ArtworkDto {
     private String imageUrl;
     private String description;
     private ApplicationUserDTO artist;
+    private List<String> categories;
     private Long likes;
-    private Long comments;
+    private List<Comment> comments;
+    private Long commentCount;
     private boolean liked;
 
 }
