@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class ArtworkUploadRequest {
     private String title;
-    private String imageUrl;
+    private List<String> imageUrl;
     private BigDecimal price;
     private String dimensions;
     private String visibility;

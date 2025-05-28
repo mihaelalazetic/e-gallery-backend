@@ -45,11 +45,12 @@ public class ArtworkController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) List<String> categories,
+            @RequestParam(required = false) String categories,
             @RequestParam(required = false) Integer priceMin,
-            @RequestParam(required = false) Integer priceMax
+            @RequestParam(required = false) Integer priceMax,
+            @RequestParam(required = false) String  filter
     ) {
-            List<Artwork> artworks = artworkService.findPaginatedWithFilters(page, size, search, categories, priceMin, priceMax);
+            List<Artwork> artworks = artworkService.findPaginatedWithFilters(page, size, search, categories, priceMin, priceMax,filter);
 
         List<ArtworkDto> response = artworks.stream()
                 .map(artwork -> {

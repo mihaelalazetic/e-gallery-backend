@@ -4,12 +4,14 @@ import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.dto.ArtworkUploadRequest;
 import com.egallery.model.entity.ApplicationUser;
 import com.egallery.model.entity.Artwork;
+import com.egallery.model.entity.ArtworkImage;
 import com.egallery.model.entity.Category;
 import com.egallery.repository.ArtworkRepository;
 import com.egallery.repository.CategoryRepository;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ArtworkService;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -60,13 +62,23 @@ public class ArtworkServiceImpl implements ArtworkService {
 
         Artwork artwork = new Artwork();
         artwork.setTitle(request.getTitle());
-        artwork.setImageUrl(request.getImageUrl());
         artwork.setPrice(request.getPrice());
         artwork.setDimensions(request.getDimensions());
         artwork.setVisibility(request.getVisibility());
         artwork.setSlug(generateSlug(request.getTitle()));
         artwork.setArtist(artist);
         artwork.setCategories(new HashSet<>(categories));
+
+        // Add multiple images to the artwork
+        Set<ArtworkImage> artworkImages = new HashSet<>();
+        int position = 0;
+        for (String imageUrl : request.getImageUrl()) {
+            ArtworkImage image = new ArtworkImage();
+            image.setImageUrl(imageUrl);
+            image.setPosition(position++);
+            artworkImages.add(image);
+        }
+        artwork.setImages(artworkImages);
 
         artworkRepository.save(artwork);
     }
@@ -82,30 +94,31 @@ public class ArtworkServiceImpl implements ArtworkService {
     }
 
     @Override
-    public Page<ArtworkDto> getFeaturedArt(int page, int size) {
+    public Page<ArtworkDto> getFeaturedArt(int page, int size)  {
         Page<Artwork> pageEntity =
                 artworkRepository.findAllOrderByLikesDesc(PageRequest.of(page, size));
         ApplicationUser current = securityUtils.getCurrentUser();
 
-        List<ArtworkDto> dtos = new ArrayList<>(
-                pageEntity.getContent().stream().map(a -> {
-                    ArtworkDto dto = new ArtworkDto();
-                    dto.setId(a.getId());
-                    dto.setTitle(a.getTitle());
-                    dto.setImageUrl(a.getImageUrl());
-                    dto.setDescription(a.getDescription());
-                    dto.setPrice(a.getPrice());
-                    dto.setArtist(a.getArtist().mapToDto());
-                    dto.setLikes((long) a.getLikes().size());
-                    dto.setCommentCount((long) a.getComments().size());
-                    boolean isLiked = current != null && a.getLikes().stream()
-                            .anyMatch(pl -> pl.getApplicationUser().getId().equals(current.getId()));
-                    dto.setLiked(isLiked);
-                    return dto;
-                }).toList()
-        );
+        List<ArtworkDto> dtos = pageEntity.getContent().stream().map(a -> {
+            ArtworkDto dto = new ArtworkDto();
+            dto.setId(a.getId());
+            dto.setTitle(a.getTitle());
+            dto.setImageUrls(a.getImages().stream()
+                    .sorted(Comparator.comparing(ArtworkImage::getPosition))
+                    .map(ArtworkImage::getImageUrl)
+                    .collect(Collectors.toList()));
+            dto.setDescription(a.getDescription());
+            dto.setPrice(a.getPrice());
+            dto.setArtist(a.getArtist().mapToDto());
+            dto.setLikes((long) a.getLikes().size());
+            dto.setCommentCount((long) a.getComments().size());
 
-        Collections.shuffle(dtos);
+            boolean isLiked = current != null && a.getLikes().stream()
+                    .anyMatch(pl -> pl.getApplicationUser().getId().equals(current.getId()));
+            dto.setLiked(isLiked);
+
+            return dto;
+        }).toList();
 
         return new PageImpl<>(
                 dtos,
@@ -122,6 +135,10 @@ public class ArtworkServiceImpl implements ArtworkService {
 
     public Long countByUserId(UUID userId) {
         return artworkRepository.countByArtistId(userId);
+    }
+
+    public List<Artwork> findByArtistId(UUID userId) {
+        return artworkRepository.findByArtistId(userId);
     }
 
     @Override
@@ -146,9 +163,13 @@ public class ArtworkServiceImpl implements ArtworkService {
                 .collect(Collectors.toList());
     }
 
-    public List<Artwork> findPaginatedWithFilters(int page, int size, String search, List<String> categories, Integer priceMin, Integer priceMax) {
+    public List<Artwork> findPaginatedWithFilters(int page, int size, String search, String categories, Integer priceMin, Integer priceMax, String filter) {
         PageRequest pageable = PageRequest.of(page, size);
-        return artworkRepository.findAll(ArtworkSpecification.withFilters(search, categories, priceMin, priceMax), pageable).getContent();
+
+        // Use the withFilters method from ArtworkSpecification
+        Specification<Artwork> spec = ArtworkSpecification.withFilters(search, categories, priceMin, priceMax, filter);
+
+        return artworkRepository.findAll(spec, pageable).getContent();
     }
 }
 

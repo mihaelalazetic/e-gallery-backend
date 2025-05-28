@@ -19,7 +19,7 @@ public class ArtworkDto {
     private BigDecimal price;
     private UUID id;
     private String title;
-    private String imageUrl;
+    private List<String> imageUrls;
     private String description;
     private ApplicationUserDTO artist;
     private List<String> categories;

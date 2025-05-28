@@ -2,6 +2,7 @@
 package com.egallery.controller;
 
 import com.egallery.model.dto.ApplicationUserDTO;
+import com.egallery.model.dto.UpdateUserRequestDTO;
 import com.egallery.model.entity.ApplicationUser;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ApplicationUserService;
@@ -18,8 +19,8 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class ApplicationUserController {
 
-    @Autowired
-    private ApplicationUserService userService;
+
+    private final ApplicationUserService userService;
 
     private final SecurityUtils securityUtils;
 
@@ -56,5 +57,24 @@ public class ApplicationUserController {
     public ResponseEntity<List<ApplicationUserDTO>> getMostLikedArtists() {
         return ResponseEntity.ok(userService.getMostLikedArtists());
     }
+
+    @GetMapping("/get-by-slug/{slug}")
+    public ResponseEntity<Object> getBySlug(@PathVariable String slug) {
+        return ResponseEntity.ok(userService.getBySlug(slug));
+    }
+
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequestDTO request) {
+        ApplicationUser user = userService.getById(request.getId());
+
+        user.setBio(request.getBio());
+        user.setFullName(request.getFullName());
+        user.setProfilePictureUrl(request.getProfilePictureUrl());
+
+        userService.create(user);
+        return ResponseEntity.ok("User updated successfully");
+    }
+
 
 }

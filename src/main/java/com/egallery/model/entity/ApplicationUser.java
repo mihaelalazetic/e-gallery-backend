@@ -27,7 +27,10 @@ public class ApplicationUser extends BaseEntity implements UserDetails {
     private String email;
 
     private String fullName;
+
+    @Column(length = 1024)
     private String bio;
+
     private String password;
 
     private String slug;
@@ -92,6 +95,7 @@ public class ApplicationUser extends BaseEntity implements UserDetails {
                 .followerCount(followerCount)
                 .isFollowing(isFollowing)
                 .artCount(artCount)
+                .slug(getSlug())
                 .build();
     }
 

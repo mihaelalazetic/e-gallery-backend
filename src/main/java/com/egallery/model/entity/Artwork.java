@@ -9,6 +9,7 @@ import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,11 @@ import java.util.stream.Collectors;
 public class Artwork extends BaseEntity {
     private String title;
     private String slug;
-    private String imageUrl;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "artwork_id")
+    private Set<ArtworkImage> images = new HashSet<>();
+
     private String description;
     private BigDecimal price;
     private String dimensions;
@@ -64,12 +69,16 @@ public class Artwork extends BaseEntity {
         ArtworkDto dto = new ArtworkDto();
         dto.setId(getId());
         dto.setTitle(getTitle());
-        dto.setImageUrl(getImageUrl());
+        dto.setImageUrls(images.stream()
+                .sorted(Comparator.comparing(ArtworkImage::getPosition))
+                .map(ArtworkImage::getImageUrl)
+                .collect(Collectors.toList()));
+
         dto.setDescription(getDescription());
         dto.setPrice(getPrice());
         dto.setArtist(getArtist().mapToDto());
-        dto.setLikes((long)(likes==null?0:likes.size()));
-        dto.setCommentCount((long)(comments==null?0:comments.size()));
+        dto.setLikes((long) (likes == null ? 0 : likes.size()));
+        dto.setCommentCount((long) (comments == null ? 0 : comments.size()));
         dto.setCategories(categories.stream().map(Category::getName).collect(Collectors.toList()));
 
         boolean isLiked = false;

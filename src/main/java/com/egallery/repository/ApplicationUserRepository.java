@@ -28,6 +28,6 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
             """, nativeQuery = true)
     List<Object[]> findMostLikedArtists();
 
-
+    Optional<ApplicationUser> findBySlug(String slug);
 
 }

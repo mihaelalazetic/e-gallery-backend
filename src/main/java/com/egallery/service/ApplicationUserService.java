@@ -13,4 +13,6 @@ public interface ApplicationUserService {
     List<ApplicationUser> getAll();
     void delete(UUID id);
     List<ApplicationUserDTO> getMostLikedArtists();
+
+    Object getBySlug(String slug);
 }

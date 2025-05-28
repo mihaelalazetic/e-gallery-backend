@@ -25,6 +25,8 @@ public interface ArtworkRepository extends JpaRepository<Artwork, UUID>, JpaSpec
 
     Long countByArtistId(UUID userId);
 
+    List<Artwork> findByArtistId(UUID userId);
+
     @Query("""
         SELECT a FROM Artwork a
         LEFT JOIN a.likes l

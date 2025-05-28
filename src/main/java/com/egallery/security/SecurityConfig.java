@@ -70,7 +70,8 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/api/featured/**"
                         ).permitAll()
 //                        .requestMatchers("/api/artworks/featured").permitAll()
                         .anyRequest().authenticated()

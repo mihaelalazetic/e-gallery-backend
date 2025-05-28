@@ -2,8 +2,10 @@
 package com.egallery.service.impl;
 
 import com.egallery.model.dto.ApplicationUserDTO;
+import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.entity.ApplicationUser;
 import com.egallery.repository.ApplicationUserRepository;
+import com.egallery.security.SecurityUtils;
 import com.egallery.service.ApplicationUserService;
 import com.egallery.service.ArtworkService;
 import com.egallery.service.SubscriptionService;
@@ -21,11 +23,13 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
     private final ApplicationUserRepository userRepository;
     private final SubscriptionService subscriptionService;
     private final ArtworkService artworkService;
+    private final SecurityUtils securityUtils;
 
-    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository, SubscriptionService subscriptionService, ArtworkService artworkService) {
+    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository, SubscriptionService subscriptionService, ArtworkService artworkService, SecurityUtils securityUtils) {
         this.userRepository = userRepository;
         this.subscriptionService = subscriptionService;
         this.artworkService = artworkService;
+        this.securityUtils = securityUtils;
     }
 
     @Override
@@ -51,6 +55,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
     public List<ApplicationUserDTO> getMostLikedArtists() {
         List<Object[]> users = userRepository.findMostLikedArtists();
         List<ApplicationUserDTO> dtos = new ArrayList<>();
+        ApplicationUser currentUser = securityUtils.getCurrentUser();
 
         for (Object[] row : users) {
             // Assuming row[0] = user id, row[1] = username, row[2] = total likes count
@@ -61,13 +66,29 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
 
             Long followers = subscriptionService.countSubscribers(userId);
             boolean following = user.isPresent()
-                    && subscriptionService.isSubscribed(user.get(), userId);
+                    && subscriptionService.isSubscribed(currentUser, userId);
             Long artCount = artworkService.countByUserId(userId);
 
             user.ifPresent(applicationUser -> dtos.add(applicationUser.mapToDto(totalLikes, followers, following, artCount)));
         }
 
         return dtos;
+    }
+
+    @Override
+    public Object getBySlug(String slug) {
+        return userRepository.findBySlug(slug)
+                .map(user -> {
+                    Long followers = subscriptionService.countSubscribers(user.getId());
+                    boolean following = subscriptionService.isSubscribed(securityUtils.getCurrentUser(), user.getId());
+                    Long artCount = artworkService.countByUserId(user.getId());
+                    ApplicationUserDTO applicationUserDTO = user.mapToDto(0L, followers, following, artCount);
+
+                    List<ArtworkDto> artworkDtos = artworkService.findByArtistId(user.getId()).stream().map(artwork -> artwork.toDto(securityUtils.getCurrentUser())).toList();
+                    applicationUserDTO.setArtworks(artworkDtos);
+                    return applicationUserDTO;
+                })
+                .orElse(null);
     }
 
 }
