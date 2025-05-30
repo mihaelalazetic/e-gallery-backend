@@ -12,28 +12,37 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface ArtworkRepository extends JpaRepository<Artwork, UUID>, JpaSpecificationExecutor<Artwork>{
-@Query(
+public interface ArtworkRepository extends JpaRepository<Artwork, UUID>, JpaSpecificationExecutor<Artwork> {
+    @Query(
             value = """
-      SELECT a
-      FROM Artwork a
-      LEFT JOIN a.likes l
-      GROUP BY a
-      ORDER BY COUNT(l) DESC
-      """)
+                    SELECT a
+                    FROM Artwork a
+                    LEFT JOIN a.likes l
+                    GROUP BY a
+                    ORDER BY COUNT(l) DESC
+                    """)
     Page<Artwork> findAllOrderByLikesDesc(Pageable pageable);
 
     Long countByArtistId(UUID userId);
 
+    @Query("""
+                SELECT COUNT(pl)
+                FROM Artwork a
+                JOIN PostLike pl ON pl.targetId = a.id
+                WHERE a.artist.id = :userId AND pl.targetType = 'ARTWORK'
+            """)
+    Long countTotalLikesByArtist(@Param("userId") UUID userId);
+
+
     List<Artwork> findByArtistId(UUID userId);
 
     @Query("""
-        SELECT a FROM Artwork a
-        LEFT JOIN a.likes l
-        WHERE a.artist.id = :artistId
-        GROUP BY a
-        ORDER BY COUNT(l) DESC
-        """)
+            SELECT a FROM Artwork a
+            LEFT JOIN a.likes l
+            WHERE a.artist.id = :artistId
+            GROUP BY a
+            ORDER BY COUNT(l) DESC
+            """)
     List<Artwork> findTopByArtistOrderByLikesDesc(
             @Param("artistId") UUID artistId, Pageable pageable
     );

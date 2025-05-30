@@ -82,7 +82,8 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
                     Long followers = subscriptionService.countSubscribers(user.getId());
                     boolean following = subscriptionService.isSubscribed(securityUtils.getCurrentUser(), user.getId());
                     Long artCount = artworkService.countByUserId(user.getId());
-                    ApplicationUserDTO applicationUserDTO = user.mapToDto(0L, followers, following, artCount);
+                    Long totalLikes = artworkService.countLikedArtworks(user.getId());
+                    ApplicationUserDTO applicationUserDTO = user.mapToDto(totalLikes, followers, following, artCount);
 
                     List<ArtworkDto> artworkDtos = artworkService.findByArtistId(user.getId()).stream().map(artwork -> artwork.toDto(securityUtils.getCurrentUser())).toList();
                     applicationUserDTO.setArtworks(artworkDtos);

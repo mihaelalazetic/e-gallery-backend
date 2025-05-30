@@ -48,9 +48,9 @@ public class ArtworkController {
             @RequestParam(required = false) String categories,
             @RequestParam(required = false) Integer priceMin,
             @RequestParam(required = false) Integer priceMax,
-            @RequestParam(required = false) String  filter
+            @RequestParam(required = false) String filter
     ) {
-            List<Artwork> artworks = artworkService.findPaginatedWithFilters(page, size, search, categories, priceMin, priceMax,filter);
+        List<Artwork> artworks = artworkService.findPaginatedWithFilters(page, size, search, categories, priceMin, priceMax, filter);
 
         List<ArtworkDto> response = artworks.stream()
                 .map(artwork -> {
@@ -75,8 +75,12 @@ public class ArtworkController {
         return ResponseEntity.ok("Uploaded");
     }
 
-
-
+        @GetMapping("/currentUserArtworks")
+    public ResponseEntity<List<ArtworkDto>> topArtworks(
+    ) {
+        List<ArtworkDto> list = artworkService.findByCurrentUser();
+        return ResponseEntity.ok(list);
+    }
 
 
 }

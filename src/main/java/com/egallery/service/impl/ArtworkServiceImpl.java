@@ -66,6 +66,7 @@ public class ArtworkServiceImpl implements ArtworkService {
         artwork.setDimensions(request.getDimensions());
         artwork.setVisibility(request.getVisibility());
         artwork.setSlug(generateSlug(request.getTitle()));
+        artwork.setDescription(request.getDescription());
         artwork.setArtist(artist);
         artwork.setCategories(new HashSet<>(categories));
 
@@ -137,6 +138,11 @@ public class ArtworkServiceImpl implements ArtworkService {
         return artworkRepository.countByArtistId(userId);
     }
 
+    @Override
+    public Long countLikedArtworks(UUID userId) {
+        return artworkRepository.countTotalLikesByArtist(userId);
+    }
+
     public List<Artwork> findByArtistId(UUID userId) {
         return artworkRepository.findByArtistId(userId);
     }
@@ -171,5 +177,18 @@ public class ArtworkServiceImpl implements ArtworkService {
 
         return artworkRepository.findAll(spec, pageable).getContent();
     }
+
+    public List<ArtworkDto> findByCurrentUser() {
+        ApplicationUser currentUser = securityUtils.getCurrentUser();
+        if (currentUser == null) {
+            return Collections.emptyList();
+        }
+
+        return findByArtistId(currentUser.getId()).stream()
+                .sorted(Comparator.comparing(Artwork::getCreatedAt).reversed())
+                .map(artwork -> artwork.toDto(currentUser))
+                .toList();
+    }
+
 }
 

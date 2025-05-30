@@ -27,11 +27,15 @@ public interface ArtworkService {
     Page<ArtworkDto> getFeaturedArt(int page, int size);
 
     Long countByUserId(UUID userId);
+
+    Long countLikedArtworks(UUID userId);
+
     List<Artwork> findByArtistId(UUID artistId);
 
     // ArtworkService.java
     List<ArtworkDto> getTopArtworksForArtist(UUID artistId, int limit);
 
-    List<Artwork> findPaginatedWithFilters(int page, int size, String search, String categories, Integer priceMin, Integer priceMax,String filter);
+    List<Artwork> findPaginatedWithFilters(int page, int size, String search, String categories, Integer priceMin, Integer priceMax, String filter);
 
+    List<ArtworkDto> findByCurrentUser();
 }
