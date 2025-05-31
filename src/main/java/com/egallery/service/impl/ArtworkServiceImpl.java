@@ -170,6 +170,9 @@ public class ArtworkServiceImpl implements ArtworkService {
     }
 
     public List<Artwork> findPaginatedWithFilters(int page, int size, String search, String categories, Integer priceMin, Integer priceMax, String filter) {
+        if ("thisMonth".equals(filter)) {
+            size = 8;
+        }
         PageRequest pageable = PageRequest.of(page, size);
 
         // Use the withFilters method from ArtworkSpecification
@@ -177,6 +180,11 @@ public class ArtworkServiceImpl implements ArtworkService {
 
         return artworkRepository.findAll(spec, pageable).getContent();
     }
+    public List<Artwork> findAllWithFilters(String search, String categories, Integer priceMin, Integer priceMax, String filter) {
+        Specification<Artwork> spec = ArtworkSpecification.withFilters(search, categories, priceMin, priceMax, filter);
+        return artworkRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "createdAt"));
+    }
+
 
     public List<ArtworkDto> findByCurrentUser() {
         ApplicationUser currentUser = securityUtils.getCurrentUser();

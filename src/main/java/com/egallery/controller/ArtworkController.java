@@ -42,16 +42,25 @@ public class ArtworkController {
 
     @GetMapping
     public ResponseEntity<List<ArtworkDto>> getArtworks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) String size,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String categories,
             @RequestParam(required = false) Integer priceMin,
             @RequestParam(required = false) Integer priceMax,
             @RequestParam(required = false) String filter
     ) {
-        List<Artwork> artworks = artworkService.findPaginatedWithFilters(page, size, search, categories, priceMin, priceMax, filter);
+        List<Artwork> artworks;
 
+        if (size != null && size.equals("*")) {
+            // No pagination: return all filtered results
+            artworks = artworkService.findAllWithFilters(search, categories, priceMin, priceMax, filter);
+        } else {
+            // Use default or provided values
+            int pageNum = page != null ? page : 0;
+            int pageSize = 20;
+            artworks = artworkService.findPaginatedWithFilters(pageNum, pageSize, search, categories, priceMin, priceMax, filter);
+        }
         List<ArtworkDto> response = artworks.stream()
                 .map(artwork -> {
                     ApplicationUser currentUser = securityUtils.getCurrentUser();

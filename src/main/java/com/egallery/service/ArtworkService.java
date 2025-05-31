@@ -4,7 +4,10 @@ package com.egallery.service;
 import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.dto.ArtworkUploadRequest;
 import com.egallery.model.entity.Artwork;
+import com.egallery.service.impl.ArtworkSpecification;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +39,6 @@ public interface ArtworkService {
     List<ArtworkDto> getTopArtworksForArtist(UUID artistId, int limit);
 
     List<Artwork> findPaginatedWithFilters(int page, int size, String search, String categories, Integer priceMin, Integer priceMax, String filter);
-
+    List<Artwork> findAllWithFilters(String search, String categories, Integer priceMin, Integer priceMax, String filter);
     List<ArtworkDto> findByCurrentUser();
 }
