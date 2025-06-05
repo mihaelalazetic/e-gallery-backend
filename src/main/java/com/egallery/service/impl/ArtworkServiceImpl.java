@@ -1,5 +1,6 @@
 package com.egallery.service.impl;
 
+import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.dto.ArtworkUploadRequest;
 import com.egallery.model.entity.ApplicationUser;
@@ -9,7 +10,9 @@ import com.egallery.model.entity.Category;
 import com.egallery.repository.ArtworkRepository;
 import com.egallery.repository.CategoryRepository;
 import com.egallery.security.SecurityUtils;
+import com.egallery.service.ApplicationUserService;
 import com.egallery.service.ArtworkService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -23,12 +26,14 @@ public class ArtworkServiceImpl implements ArtworkService {
     private final ArtworkRepository artworkRepository;
     private final CategoryRepository categoryRepository;
     private final SecurityUtils securityUtils;
+    private final ApplicationUserService applicationUserService;
 
     public ArtworkServiceImpl(ArtworkRepository artworkRepository,
-                              CategoryRepository categoryRepository, SecurityUtils securityUtils) {
+                              CategoryRepository categoryRepository, SecurityUtils securityUtils, @Lazy ApplicationUserService applicationUserService) {
         this.artworkRepository = artworkRepository;
         this.categoryRepository = categoryRepository;
         this.securityUtils = securityUtils;
+        this.applicationUserService = applicationUserService;
     }
 
     @Override
@@ -198,5 +203,18 @@ public class ArtworkServiceImpl implements ArtworkService {
                 .toList();
     }
 
+    public List<ArtworkDto> userPublicArtworks(String slug) {
+        ApplicationUserDTO userDTO = (ApplicationUserDTO) applicationUserService.getBySlug(slug);
+        ApplicationUser user = applicationUserService.getById(userDTO.getId());
+        if (user == null) {
+            return Collections.emptyList();
+        }
+
+        return findByArtistId(user.getId()).stream()
+                .sorted(Comparator.comparing(Artwork::getCreatedAt).reversed())
+                .filter(artwork -> Objects.equals(artwork.getVisibility(), "public"))
+                .map(artwork -> artwork.toDto(user))
+                .toList();
+    }
 }
 

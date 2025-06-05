@@ -85,11 +85,16 @@ public class ArtworkController {
     }
 
         @GetMapping("/currentUserArtworks")
-    public ResponseEntity<List<ArtworkDto>> topArtworks(
+    public ResponseEntity<List<ArtworkDto>> currentUserArtworks(
     ) {
         List<ArtworkDto> list = artworkService.findByCurrentUser();
         return ResponseEntity.ok(list);
     }
 
-
+    @GetMapping("/userPublicArtworks/{slug}")
+    public ResponseEntity<List<ArtworkDto>> userPublicArtworks(@PathVariable String slug
+    ) {
+        List<ArtworkDto> list = artworkService.userPublicArtworks(slug);
+        return ResponseEntity.ok(list);
+    }
 }

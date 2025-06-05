@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -27,5 +28,6 @@ public class ArtworkDto {
     private List<Comment> comments;
     private Long commentCount;
     private boolean liked;
+    private LocalDateTime createdAt;
 
 }

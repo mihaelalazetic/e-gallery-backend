@@ -1,9 +1,11 @@
 
 package com.egallery.controller;
 
+import com.egallery.model.dto.CreateEventRequest;
 import com.egallery.model.entity.Event;
 import com.egallery.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +17,6 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
-
-    @PostMapping
-    public Event create(@RequestBody Event entity) {
-        return eventService.create(entity);
-    }
 
     @GetMapping("/{id}")
     public Event getById(@PathVariable UUID id) {
@@ -34,5 +31,11 @@ public class EventController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         eventService.delete(id);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Event> create(@ModelAttribute CreateEventRequest request) {
+        Event created = eventService.createEventWithExhibition(request);
+        return ResponseEntity.ok(created);
     }
 }

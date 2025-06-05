@@ -80,7 +80,7 @@ public class Artwork extends BaseEntity {
         dto.setLikes((long) (likes == null ? 0 : likes.size()));
         dto.setCommentCount((long) (comments == null ? 0 : comments.size()));
         dto.setCategories(categories.stream().map(Category::getName).collect(Collectors.toList()));
-
+        dto.setCreatedAt(getCreatedAt());
         boolean isLiked = false;
         if (currentUser != null && likes != null) {
             isLiked = likes.stream()

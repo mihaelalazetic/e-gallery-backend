@@ -12,6 +12,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Exhibition extends BaseEntity {
     private String title;
     private String slug;
@@ -27,8 +28,8 @@ public class Exhibition extends BaseEntity {
     @ManyToOne
     private Venue venue;
 
-    @OneToOne
-    private Event event;
+//    @OneToOne
+//    private Event event;
 
     @ManyToMany
     @JoinTable(

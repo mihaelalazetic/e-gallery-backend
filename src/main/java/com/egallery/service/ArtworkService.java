@@ -41,4 +41,6 @@ public interface ArtworkService {
     List<Artwork> findPaginatedWithFilters(int page, int size, String search, String categories, Integer priceMin, Integer priceMax, String filter);
     List<Artwork> findAllWithFilters(String search, String categories, Integer priceMin, Integer priceMax, String filter);
     List<ArtworkDto> findByCurrentUser();
+
+    List<ArtworkDto> userPublicArtworks(String slug);
 }

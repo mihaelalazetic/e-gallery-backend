@@ -4,16 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d4ac965-e2ad-4798-a561-e95b4e196772" name="Changes" comment="add user profile update functionality and slug-based retrieval">
+    <list default="true" id="8d4ac965-e2ad-4798-a561-e95b4e196772" name="Changes" comment="add support for retrieving all artworks without pagination and enhance pagination logic">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/CreateEventRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/controller/ArtworkController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/controller/ArtworkController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/ArtworkUploadRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/ArtworkUploadRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/repository/ArtworkRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/repository/ArtworkRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/controller/EventController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/controller/EventController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/ArtworkDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/ArtworkDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Artwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Artwork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Event.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Exhibition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Exhibition.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/ArtworkService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/ArtworkService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ApplicationUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ApplicationUserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/EventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/EventService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ArtworkServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ArtworkServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/EventServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/EventServiceImpl.java" afterDir="false" />
     </list>
-    <list id="94e814dd-b076-4955-93ee-20222846f1ef" name="Ignore" comment="">
+    <list id="94e814dd-b076-4955-93ee-20222846f1ef" name="Ignore" comment="Ignore">
       <change afterPath="$PROJECT_DIR$/.vs/Diplomska/v17/.wsuo" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.vs/Diplomska/v17/DocumentLayout.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/checksums/checksums.lock" afterDir="false" />
@@ -37,6 +42,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/VSWorkspaceState.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ArtworkSpecification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ArtworkSpecification.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,7 +166,7 @@
       <workItem from="1745655268345" duration="14501000" />
       <workItem from="1745801229746" duration="26261000" />
       <workItem from="1747139576970" duration="996000" />
-      <workItem from="1747249326795" duration="54256000" />
+      <workItem from="1747249326795" duration="63592000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -234,7 +240,23 @@
       <option name="project" value="LOCAL" />
       <updated>1748472256810</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="add total likes count to user profile and implement endpoint for current user's artworks">
+      <option name="closed" value="true" />
+      <created>1748638298524</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1748638298524</updated>
+    </task>
+    <task id="LOCAL-00011" summary="add support for retrieving all artworks without pagination and enhance pagination logic">
+      <option name="closed" value="true" />
+      <created>1748724928780</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1748724928780</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -261,6 +283,19 @@
     <MESSAGE value="added featured controller and fetching most liked artworks from an artist" />
     <MESSAGE value="add category management and enhance artwork filtering with pagination" />
     <MESSAGE value="add user profile update functionality and slug-based retrieval" />
-    <option name="LAST_COMMIT_MESSAGE" value="add user profile update functionality and slug-based retrieval" />
+    <MESSAGE value="add total likes count to user profile and implement endpoint for current user's artworks" />
+    <MESSAGE value="add support for retrieving all artworks without pagination and enhance pagination logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="add support for retrieving all artworks without pagination and enhance pagination logic" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/egallery/controller/ArtworkController.java</url>
+          <line>89</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
