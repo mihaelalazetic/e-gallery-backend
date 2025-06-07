@@ -2,7 +2,7 @@
 package com.egallery.service;
 
 import com.egallery.model.entity.Comment;
-import com.egallery.model.entity.InteractionTargetType;
+import com.egallery.model.enums.InteractionTargetType;
 
 import java.util.List;
 import java.util.UUID;

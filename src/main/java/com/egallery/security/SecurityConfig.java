@@ -73,7 +73,6 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/api/featured/**"
                         ).permitAll()
-//                        .requestMatchers("/api/artworks/featured").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

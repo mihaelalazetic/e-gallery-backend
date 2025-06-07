@@ -1,6 +1,7 @@
 
 package com.egallery.model.entity;
 
+import com.egallery.model.enums.InteractionTargetType;
 import jakarta.persistence.*;
 import lombok.*;
 

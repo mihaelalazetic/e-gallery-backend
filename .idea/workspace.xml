@@ -4,19 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d4ac965-e2ad-4798-a561-e95b4e196772" name="Changes" comment="add support for retrieving all artworks without pagination and enhance pagination logic">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/CreateEventRequest.java" afterDir="false" />
+    <list default="true" id="8d4ac965-e2ad-4798-a561-e95b4e196772" name="Changes" comment="add functionality to create events with optional exhibitions and implement user public artworks retrieval">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/EventDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/enums/EventType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/controller/ArtworkController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/controller/ArtworkController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/controller/CommentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/controller/CommentController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/controller/EventController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/controller/EventController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/ArtworkDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/ArtworkDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/controller/ExhibitionController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/controller/PostLikeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/controller/PostLikeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/CreateEventRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/dto/CreateEventRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Artwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Artwork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/BaseEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/BaseEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Comment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Exhibition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Exhibition.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/ArtworkService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/ArtworkService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Exhibition.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/InteractionTargetType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/enums/InteractionTargetType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/PostLike.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/PostLike.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Subscription.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Subscription.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Venue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/model/entity/Venue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/repository/CommentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/repository/CommentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/repository/EventRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/repository/EventRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/repository/ExhibitionRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/repository/PostLikeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/repository/PostLikeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/repository/SubscriptionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/repository/SubscriptionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/repository/VenueRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/repository/VenueRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/security/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/security/JwtAuthFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/CommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/CommentService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/EventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/EventService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ArtworkServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ArtworkServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/ExhibitionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/PostLikeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/PostLikeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/CommentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/CommentServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/EventServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/EventServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/ExhibitionServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/PostLikeServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/PostLikeServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/SubscriptionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/egallery/service/impl/SubscriptionServiceImpl.java" afterDir="false" />
     </list>
     <list id="94e814dd-b076-4955-93ee-20222846f1ef" name="Ignore" comment="Ignore">
       <change afterPath="$PROJECT_DIR$/.vs/Diplomska/v17/.wsuo" afterDir="false" />
@@ -166,7 +189,7 @@
       <workItem from="1745655268345" duration="14501000" />
       <workItem from="1745801229746" duration="26261000" />
       <workItem from="1747139576970" duration="996000" />
-      <workItem from="1747249326795" duration="63592000" />
+      <workItem from="1747249326795" duration="84459000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -256,7 +279,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748724928780</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="add functionality to create events with optional exhibitions and implement user public artworks retrieval">
+      <option name="closed" value="true" />
+      <created>1749123904186</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1749123904187</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -285,15 +316,21 @@
     <MESSAGE value="add user profile update functionality and slug-based retrieval" />
     <MESSAGE value="add total likes count to user profile and implement endpoint for current user's artworks" />
     <MESSAGE value="add support for retrieving all artworks without pagination and enhance pagination logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="add support for retrieving all artworks without pagination and enhance pagination logic" />
+    <MESSAGE value="add functionality to create events with optional exhibitions and implement user public artworks retrieval" />
+    <option name="LAST_COMMIT_MESSAGE" value="add functionality to create events with optional exhibitions and implement user public artworks retrieval" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/egallery/controller/ArtworkController.java</url>
-          <line>89</line>
+          <line>86</line>
           <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/egallery/service/impl/EventServiceImpl.java</url>
+          <line>113</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -3,7 +3,9 @@ package com.egallery.model.entity;
 
 import com.egallery.model.dto.ArtworkDto;
 import com.egallery.security.SecurityUtils;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
@@ -51,7 +53,9 @@ public class Artwork extends BaseEntity {
 
 
     @ManyToMany(mappedBy = "artworks")
-    private Set<Exhibition> exhibitions = new HashSet<>();
+    @JsonBackReference
+    private Set<Event> events = new HashSet<>();
+
     @OneToMany
     @JoinColumn(name = "targetId", referencedColumnName = "id", insertable = false, updatable = false)
     @Where(clause = "target_type = 'ARTWORK'")

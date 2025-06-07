@@ -1,7 +1,7 @@
 package com.egallery.repository;
 
 import com.egallery.model.entity.ApplicationUser;
-import com.egallery.model.entity.InteractionTargetType;
+import com.egallery.model.enums.InteractionTargetType;
 import com.egallery.model.entity.PostLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

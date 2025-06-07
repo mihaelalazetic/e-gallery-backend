@@ -2,11 +2,10 @@
 package com.egallery.service.impl;
 
 import com.egallery.model.entity.ApplicationUser;
-import com.egallery.model.entity.InteractionTargetType;
+import com.egallery.model.enums.InteractionTargetType;
 import com.egallery.model.entity.Subscription;
 import com.egallery.repository.SubscriptionRepository;
 import com.egallery.service.SubscriptionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

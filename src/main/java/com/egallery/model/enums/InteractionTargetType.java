@@ -1,5 +1,5 @@
 
-package com.egallery.model.entity;
+package com.egallery.model.enums;
 
 public enum InteractionTargetType {
     ARTWORK,

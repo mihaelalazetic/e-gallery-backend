@@ -4,7 +4,7 @@ package com.egallery.controller;
 
 import com.egallery.model.entity.Comment;
 import com.egallery.model.entity.ApplicationUser;
-import com.egallery.model.entity.InteractionTargetType;
+import com.egallery.model.enums.InteractionTargetType;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.CommentService;
 import org.springframework.web.bind.annotation.*;

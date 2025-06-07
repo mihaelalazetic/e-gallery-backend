@@ -3,7 +3,7 @@
 package com.egallery.service.impl;
 
 import com.egallery.model.entity.Comment;
-import com.egallery.model.entity.InteractionTargetType;
+import com.egallery.model.enums.InteractionTargetType;
 import com.egallery.repository.CommentRepository;
 import com.egallery.service.CommentService;
 import org.springframework.stereotype.Service;

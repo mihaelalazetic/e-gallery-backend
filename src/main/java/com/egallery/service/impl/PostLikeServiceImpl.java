@@ -2,7 +2,7 @@ package com.egallery.service.impl;
 
 import com.egallery.model.entity.PostLike;
 import com.egallery.model.entity.ApplicationUser;
-import com.egallery.model.entity.InteractionTargetType;
+import com.egallery.model.enums.InteractionTargetType;
 import com.egallery.repository.PostLikeRepository;
 import com.egallery.service.PostLikeService;
 import org.springframework.stereotype.Service;

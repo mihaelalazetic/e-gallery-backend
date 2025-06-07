@@ -7,10 +7,7 @@ import com.egallery.model.entity.ApplicationUser;
 import com.egallery.model.entity.Artwork;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ArtworkService;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

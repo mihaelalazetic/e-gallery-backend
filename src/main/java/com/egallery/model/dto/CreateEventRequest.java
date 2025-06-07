@@ -1,7 +1,6 @@
 package com.egallery.model.dto;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +16,9 @@ public class CreateEventRequest {
     private String venueAddress;
     private String meetingLink;
     private Boolean isPublic;
-    private List<String> links;
+    private List<String> tags;
     private List<UUID> artworkIds; // optional exhibition artworks
     private String bannerImage;
+    private String eventType;
+    private String createdByUUID; // username of the creator
 }

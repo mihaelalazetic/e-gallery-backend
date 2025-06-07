@@ -2,7 +2,7 @@
 package com.egallery.service;
 
 import com.egallery.model.entity.ApplicationUser;
-import com.egallery.model.entity.InteractionTargetType;
+import com.egallery.model.enums.InteractionTargetType;
 import com.egallery.model.entity.PostLike;
 
 import java.util.List;

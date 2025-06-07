@@ -2,9 +2,11 @@
 package com.egallery.controller;
 
 import com.egallery.model.dto.CreateEventRequest;
+import com.egallery.model.dto.EventDto;
 import com.egallery.model.entity.Event;
+import com.egallery.security.SecurityUtils;
 import com.egallery.service.EventService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +17,17 @@ import java.util.UUID;
 @RequestMapping("/api/events")
 public class EventController {
 
-    @Autowired
-    private EventService eventService;
+    private final EventService eventService;
+
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Event> create(@RequestBody CreateEventRequest request) throws BadRequestException {
+        Event created = eventService.createEventWithExhibition(request);
+        return ResponseEntity.ok(created);
+    }
 
     @GetMapping("/{id}")
     public Event getById(@PathVariable UUID id) {
@@ -28,14 +39,18 @@ public class EventController {
         return eventService.getAll();
     }
 
+    @GetMapping("/upcoming")
+    public List<EventDto> getUpcomingEvents() {
+        return eventService.getUpcomingEvents()
+                .stream()
+                .map(EventDto::from)
+                .toList();
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         eventService.delete(id);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Event> create(@ModelAttribute CreateEventRequest request) {
-        Event created = eventService.createEventWithExhibition(request);
-        return ResponseEntity.ok(created);
-    }
+
 }
