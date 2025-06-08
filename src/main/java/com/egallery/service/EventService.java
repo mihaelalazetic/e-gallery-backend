@@ -15,4 +15,6 @@ public interface EventService {
     void delete(UUID id);
     Event createEventWithExhibition(CreateEventRequest request) throws BadRequestException;
     List<Event> getUpcomingEvents();
+
+    Event getBySlug(String slug);
 }

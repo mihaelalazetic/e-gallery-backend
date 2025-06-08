@@ -15,6 +15,7 @@ public class EventDto {
     private String name;
     private String description;
     private String location;
+    private String locationAddress;
     private String startDate;
     private String endDate;
     private boolean isPublic;
@@ -35,6 +36,7 @@ public class EventDto {
                 .description(e.getDescription())
                 // if you want address+city+country, concatenate however you like:
                 .location(e.getVenue().getName())
+                .locationAddress(e.getVenue().getAddress())
                 .startDate(e.getStartDate().format(FORMATTER))
                 .endDate(e.getEndDate().format(FORMATTER))
                 .isPublic(Boolean.TRUE.equals(e.getIsPublic()))

@@ -33,10 +33,16 @@ public class EventController {
     public Event getById(@PathVariable UUID id) {
         return eventService.getById(id);
     }
+    @GetMapping("/slug/{slug}")
+    public Event getBySlug(@PathVariable String slug) {
+        return eventService.getBySlug(slug);
+    }
 
-    @GetMapping
-    public List<Event> getAll() {
-        return eventService.getAll();
+    @GetMapping("/all")
+    public List<EventDto> getAll() {
+        return eventService.getAll() .stream()
+                .map(EventDto::from)
+                .toList();
     }
 
     @GetMapping("/upcoming")

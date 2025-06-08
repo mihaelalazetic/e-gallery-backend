@@ -119,6 +119,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public Event getBySlug(String slug) {
+        return eventRepository.findBySlug(slug)
+                .orElseThrow(() -> new NoSuchElementException("Event not found with slug: " + slug));
+    }
+
+    @Override
     public Event getById(UUID id) {
         return eventRepository.findById(id).orElse(null);
     }
