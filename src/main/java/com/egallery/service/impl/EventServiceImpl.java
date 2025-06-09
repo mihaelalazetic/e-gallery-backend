@@ -9,10 +9,10 @@ import com.egallery.model.enums.EventType;
 import com.egallery.repository.ArtworkRepository;
 import com.egallery.repository.EventRepository;
 import com.egallery.repository.VenueRepository;
+import com.egallery.security.SecurityUtils;
 import com.egallery.service.ApplicationUserService;
 import com.egallery.service.EventService;
 import org.apache.coyote.BadRequestException;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,14 +26,16 @@ public class EventServiceImpl implements EventService {
     private final ArtworkRepository artworkRepository;
     private final VenueRepository venueRepository;
     private final ApplicationUserService applicationUserService;
+    private final SecurityUtils securityUtils;
 
     public EventServiceImpl(EventRepository eventRepository,
                             ArtworkRepository artworkRepository,
-                            VenueRepository venueRepository, ApplicationUserService applicationUserService) {
+                            VenueRepository venueRepository, ApplicationUserService applicationUserService, SecurityUtils securityUtils) {
         this.eventRepository = eventRepository;
         this.artworkRepository = artworkRepository;
         this.venueRepository = venueRepository;
         this.applicationUserService = applicationUserService;
+        this.securityUtils = securityUtils;
     }
 
     @Override
@@ -113,6 +115,14 @@ public class EventServiceImpl implements EventService {
     public List<Event> getUpcomingEvents() {
         LocalDateTime now = LocalDateTime.now();
         List<Event> events = eventRepository.findAllByStartDateAfterAndIsPublicTrue(now);
+        return events.stream()
+                .sorted(Comparator.comparing(Event::getStartDate))
+                .collect(Collectors.toList());
+    }
+
+    public List<Event> getMyEvents() {
+        ApplicationUser user = securityUtils.getCurrentUser();
+        List<Event> events = eventRepository.findAllByCreatedBy(user);
         return events.stream()
                 .sorted(Comparator.comparing(Event::getStartDate))
                 .collect(Collectors.toList());

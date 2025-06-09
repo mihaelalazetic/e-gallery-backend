@@ -10,4 +10,6 @@ public interface ArtworkLinkService {
     ArtworkLink getById(UUID id);
     List<ArtworkLink> getAll();
     void delete(UUID id);
+
+    List<ArtworkLink> findByArtworkId(UUID artworkId);
 }

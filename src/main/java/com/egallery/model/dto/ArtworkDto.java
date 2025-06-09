@@ -1,5 +1,6 @@
 package com.egallery.model.dto;
 
+import com.egallery.model.entity.ArtworkLink;
 import com.egallery.model.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class ArtworkDto {
     private String description;
     private ApplicationUserDTO artist;
     private List<String> categories;
+    private List<ArtworkLink> links;
     private Long likes;
     private List<Comment> comments;
     private Long commentCount;

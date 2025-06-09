@@ -15,4 +15,5 @@ public class ArtworkUploadRequest {
     private String dimensions;
     private String visibility;
     private List<Long> categoryIds; // selected from dropdown on frontend
+    private List<String> relevantLinks;
 }

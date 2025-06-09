@@ -52,6 +52,13 @@ public class EventController {
                 .map(EventDto::from)
                 .toList();
     }
+    @GetMapping("/my-events")
+    public List<EventDto> getMyEvents() {
+        return eventService.getMyEvents()
+                .stream()
+                .map(EventDto::from)
+                .toList();
+    }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {

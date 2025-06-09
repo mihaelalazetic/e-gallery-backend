@@ -35,4 +35,9 @@ public class ArtworkLinkServiceImpl implements ArtworkLinkService {
     public void delete(UUID id) {
         artworkLinkRepository.deleteById(id);
     }
+
+    @Override
+    public List<ArtworkLink> findByArtworkId(UUID artworkId) {
+        return artworkLinkRepository.findByArtworkId(artworkId);
+    }
 }

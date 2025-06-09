@@ -3,20 +3,20 @@ package com.egallery.service.impl;
 import com.egallery.model.dto.ApplicationUserDTO;
 import com.egallery.model.dto.ArtworkDto;
 import com.egallery.model.dto.ArtworkUploadRequest;
-import com.egallery.model.entity.ApplicationUser;
-import com.egallery.model.entity.Artwork;
-import com.egallery.model.entity.ArtworkImage;
-import com.egallery.model.entity.Category;
+import com.egallery.model.entity.*;
 import com.egallery.repository.ArtworkRepository;
 import com.egallery.repository.CategoryRepository;
 import com.egallery.security.SecurityUtils;
 import com.egallery.service.ApplicationUserService;
+import com.egallery.service.ArtworkLinkService;
 import com.egallery.service.ArtworkService;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,13 +27,15 @@ public class ArtworkServiceImpl implements ArtworkService {
     private final CategoryRepository categoryRepository;
     private final SecurityUtils securityUtils;
     private final ApplicationUserService applicationUserService;
+    private final ArtworkLinkService artworkLinkService;
 
     public ArtworkServiceImpl(ArtworkRepository artworkRepository,
-                              CategoryRepository categoryRepository, SecurityUtils securityUtils, @Lazy ApplicationUserService applicationUserService) {
+                              CategoryRepository categoryRepository, SecurityUtils securityUtils, @Lazy ApplicationUserService applicationUserService, ArtworkLinkService artworkLinkService) {
         this.artworkRepository = artworkRepository;
         this.categoryRepository = categoryRepository;
         this.securityUtils = securityUtils;
         this.applicationUserService = applicationUserService;
+        this.artworkLinkService = artworkLinkService;
     }
 
     @Override
@@ -43,7 +45,15 @@ public class ArtworkServiceImpl implements ArtworkService {
 
     @Override
     public ArtworkDto getById(UUID id) {
-        return Objects.requireNonNull(artworkRepository.findById(id).orElse(null)).toDto(securityUtils.getCurrentUser());
+        Artwork artwork = Objects.requireNonNull(artworkRepository.findById(id).orElse(null));
+        ApplicationUser currentUser = securityUtils.getCurrentUser();
+
+        ArtworkDto dto = artwork.toDto(currentUser);
+
+        List<ArtworkLink> links = artworkLinkService.findByArtworkId(artwork.getId());
+        dto.setLinks(links);
+
+        return dto;
     }
 
     @Override
@@ -56,6 +66,7 @@ public class ArtworkServiceImpl implements ArtworkService {
         artworkRepository.deleteById(id);
     }
 
+    @SneakyThrows
     @Override
     public void uploadArtwork(ArtworkUploadRequest request) {
         ApplicationUser artist = securityUtils.getCurrentUser();
@@ -86,7 +97,42 @@ public class ArtworkServiceImpl implements ArtworkService {
         }
         artwork.setImages(artworkImages);
 
-        artworkRepository.save(artwork);
+        Artwork artwork1 = artworkRepository.save(artwork);
+
+        Map<String, String> socialMediaLabels = Map.of(
+                "instagram", "Instagram",
+                "facebook", "Facebook",
+                "twitter", "Twitter",
+                "linkedin", "LinkedIn",
+                "youtube", "YouTube",
+                "tiktok", "TikTok",
+                "pinterest", "Pinterest",
+                "etsy", "Etsy"
+        );
+
+        for (String link : request.getRelevantLinks()) {
+            String label = "Other";
+            // Default label for non-popular links
+            for (Map.Entry<String, String> entry : socialMediaLabels.entrySet()) {
+                if (link.contains(entry.getKey())) {
+                    label = entry.getValue();
+                    break;
+                }
+            }
+            if (label.trim().isEmpty() || label.equals("Other")) {
+                URI uri = new URI(link);
+                String host = uri.getHost();
+                if (host != null) {
+                    String[] parts = host.split("\\.");
+                    if (parts.length > 1) {
+                        label = parts[parts.length - 2].substring(0, 1).toUpperCase() + parts[parts.length - 2].substring(1);
+                    }
+                }
+            }
+
+            ArtworkLink artworkLink = new ArtworkLink(label, link, artwork1);
+            artworkLinkService.create(artworkLink);
+        }
     }
 
     private String generateSlug(String title) {
@@ -100,7 +146,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     }
 
     @Override
-    public Page<ArtworkDto> getFeaturedArt(int page, int size)  {
+    public Page<ArtworkDto> getFeaturedArt(int page, int size) {
         Page<Artwork> pageEntity =
                 artworkRepository.findAllOrderByLikesDesc(PageRequest.of(page, size));
         ApplicationUser current = securityUtils.getCurrentUser();
@@ -185,6 +231,7 @@ public class ArtworkServiceImpl implements ArtworkService {
 
         return artworkRepository.findAll(spec, pageable).getContent();
     }
+
     public List<Artwork> findAllWithFilters(String search, String categories, Integer priceMin, Integer priceMax, String filter) {
         Specification<Artwork> spec = ArtworkSpecification.withFilters(search, categories, priceMin, priceMax, filter);
         return artworkRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "createdAt"));
