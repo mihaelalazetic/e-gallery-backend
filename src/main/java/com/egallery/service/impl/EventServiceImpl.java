@@ -98,7 +98,7 @@ public class EventServiceImpl implements EventService {
                 .endDate(end)
                 .slug(req.getTitle().toLowerCase().replace(" ", "-")
                         + "-" + UUID.randomUUID().toString().substring(0, 5))
-                .bannerImageUrl(req.getBannerImage())
+                .bannerImageUrl(req.getBannerImage().trim().isEmpty() ? "https://xgvoeecvligsvmyefasj.supabase.co/storage/v1/object/public/events//no%20event.png" : req.getBannerImage())
                 .isPublic(req.getIsPublic())
                 .shareableLink(UUID.randomUUID().toString())
                 .venue(venue)

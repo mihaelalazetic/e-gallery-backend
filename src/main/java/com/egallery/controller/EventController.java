@@ -34,8 +34,8 @@ public class EventController {
         return eventService.getById(id);
     }
     @GetMapping("/slug/{slug}")
-    public Event getBySlug(@PathVariable String slug) {
-        return eventService.getBySlug(slug);
+    public EventDto getBySlug(@PathVariable String slug) {
+        return eventService.getBySlug(slug).toDto();
     }
 
     @GetMapping("/all")

@@ -1,6 +1,6 @@
-
 package com.egallery.model.entity;
 
+import com.egallery.model.dto.EventDto;
 import com.egallery.model.enums.EventType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,8 +9,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -57,7 +57,6 @@ public class Event extends BaseEntity {
     @Column(name = "tag")
     private Set<String> tags = new HashSet<>();
 
-
     @ManyToMany
     @JoinTable(
             name = "event_featured_artists",
@@ -65,6 +64,29 @@ public class Event extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "artist_id")
     )
     private Set<ApplicationUser> featuredArtists = new HashSet<>();
-//    @OneToOne
-//    private Exhibition exhibition;
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    public EventDto toDto() {
+        return EventDto.builder()
+                .name(this.title)
+                .description(this.description)
+                .location(this.venue != null ? this.venue.getName() : null)
+                .locationAddress(this.venue != null ? this.venue.getAddress() : null)
+                .startDate(this.startDate != null ? this.startDate.format(FORMATTER) : null)
+                .endDate(this.endDate != null ? this.endDate.format(FORMATTER) : null)
+                .isPublic(Boolean.TRUE.equals(this.isPublic))
+                .bannerImageUrl(this.bannerImageUrl)
+                .shareableLink(this.shareableLink)
+                .createdBy(this.createdBy != null ? this.createdBy.getUsername() : null)
+                .type(this.type != null ? this.type.name() : null)
+                .tags(this.tags.toArray(new String[0]))
+                .artworkIds(
+                        this.artworks.stream()
+                                .map(artwork -> artwork.getId().toString())
+                                .toArray(String[]::new)
+                )
+                .slug(this.slug)
+                .build();
+    }
 }
